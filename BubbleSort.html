@@ -7795,227 +7795,13 @@ a.anchor-link {
 </style>
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<main><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7869f2ca-6f9a-46ff-a4b2-ca5cc7fbf0e4">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">display</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">simulador_bubble_sort_numeros</span><span class="p">():</span>
-    <span class="n">html</span> <span class="o">=</span> <span class="s2">"""</span>
-<span class="s2">    &lt;div style="font-family: sans-serif; padding: 15px; border: 1px solid #ccc;</span>
-<span class="s2">                border-radius: 10px; background: #fafafa; max-width: 820px;"&gt;</span>
-<span class="s2">      &lt;h4 style="margin: 0 0 10px 0;"&gt;🔢 Bubble Sort — Simulación con Números&lt;/h4&gt;</span>
-<span class="s2">      </span>
-<span class="s2">      &lt;div style="margin-bottom: 10px;"&gt;</span>
-<span class="s2">        &lt;label&gt;Cantidad de números (5 a 20): &lt;/label&gt;</span>
-<span class="s2">        &lt;input type="number" id="numInput" value="10" min="5" max="20" style="width: 60px; margin-right: 15px;"&gt;</span>
-<span class="s2">        &lt;button id="btnGenerar" style="padding: 4px 10px; cursor: pointer;"&gt;⟲ Generar Nuevo&lt;/button&gt;</span>
-<span class="s2">      &lt;/div&gt;</span>
-
-<span class="s2">      &lt;canvas id="canvas" width="800" height="200" style="background:#fff; border: 1px solid #ddd; border-radius:8px; display:block;"&gt;&lt;/canvas&gt;</span>
-<span class="s2">      </span>
-<span class="s2">      &lt;div style="margin-top: 10px; display: flex; gap: 10px; align-items: center;"&gt;</span>
-<span class="s2">        &lt;button id="btnAnt" style="padding:6px 12px; cursor:pointer;"&gt;⏮ Anterior&lt;/button&gt;</span>
-<span class="s2">        &lt;button id="btnPlay" style="padding:6px 14px; cursor:pointer;"&gt;▶ Reproducir&lt;/button&gt;</span>
-<span class="s2">        &lt;button id="btnSig" style="padding:6px 12px; cursor:pointer;"&gt;Siguiente ⏭&lt;/button&gt;</span>
-<span class="s2">        &lt;span id="info" style="margin-left: auto; color:#555; font-size:14px;"&gt;Paso: 0 / 0&lt;/span&gt;</span>
-<span class="s2">      &lt;/div&gt;</span>
-<span class="s2">    &lt;/div&gt;</span>
-
-<span class="s2">    &lt;script&gt;</span>
-<span class="s2">      setTimeout(function() {</span>
-<span class="s2">          const canvas = document.getElementById('canvas');</span>
-<span class="s2">          if (!canvas) return;</span>
-<span class="s2">          const ctx = canvas.getContext('2d');</span>
-<span class="s2">          const W = canvas.width, H = canvas.height;</span>
-<span class="s2">          const inputNum = document.getElementById('numInput');</span>
-<span class="s2">          const infoLabel = document.getElementById('info');</span>
-<span class="s2">          </span>
-<span class="s2">                   const PALETA = {</span>
-<span class="s2">              fondo: '#1e1e1e',</span>
-<span class="s2">              normalFondo: '#333333',</span>
-<span class="s2">              normalBorde: '#555555',</span>
-<span class="s2">              normalTexto: '#ffffff',</span>
-<span class="s2">              </span>
-<span class="s2">              compararFondo: '#8b0000',  </span>
-<span class="s2">              compararBorde: '#ff4c4c',</span>
-<span class="s2">              compararTexto: '#ffffff',</span>
-<span class="s2">              </span>
-<span class="s2">              exitoFondo: '#1b5e20',    </span>
-<span class="s2">              exitoBorde: '#4caf50',</span>
-<span class="s2">              exitoTexto: '#ffffff'</span>
-<span class="s2">          };</span>
-
-<span class="s2">          let pasos = [];      </span>
-<span class="s2">          let pasoActual = 0;  </span>
-<span class="s2">          let playing = false;</span>
-<span class="s2">          let timer = null;</span>
-
-<span class="s2">          function calcularPasos(n) {</span>
-<span class="s2">            let arr = Array.from(</span><span class="si">{length: n}</span><span class="s2">, () =&gt; Math.floor(Math.random() * 90) + 10);</span>
-<span class="s2">            let historial = [];</span>
-<span class="s2">            </span>
-<span class="s2">            historial.push({ arr: [...arr], comp: null, done: false });</span>
-
-<span class="s2">            let len = arr.length;</span>
-<span class="s2">            for (let i = 0; i &lt; len - 1; i++) {</span>
-<span class="s2">              for (let j = 0; j &lt; len - i - 1; j++) {</span>
-<span class="s2">                historial.push({ arr: [...arr], comp: [j, j+1], done: false });</span>
-<span class="s2">                </span>
-<span class="s2">                if (arr[j] &gt; arr[j+1]) {</span>
-<span class="s2">                  [arr[j], arr[j+1]] = [arr[j+1], arr[j]];</span>
-<span class="s2">                  historial.push({ arr: [...arr], comp: [j, j+1], done: false });</span>
-<span class="s2">                }</span>
-<span class="s2">              }</span>
-<span class="s2">            }</span>
-<span class="s2">            historial.push({ arr: [...arr], comp: null, done: true });</span>
-<span class="s2">            return historial;</span>
-<span class="s2">          }</span>
-
-<span class="s2">          function dibujarEstado(estado) {</span>
-<span class="s2">            ctx.clearRect(0, 0, W, H); </span>
-<span class="s2">            ctx.fillStyle = PALETA.fondo;</span>
-<span class="s2">            ctx.fillRect(0, 0, W, H);</span>
-<span class="s2">            </span>
-<span class="s2">            const n = estado.arr.length;</span>
-<span class="s2">            const margen = 5;</span>
-<span class="s2">            const anchoTotal = W - (margen * (n + 1));</span>
-<span class="s2">            const boxW = Math.min(60, anchoTotal / n); </span>
-<span class="s2">            const boxH = 50;</span>
-<span class="s2">            const startY = (H - boxH) / 2; </span>
-
-<span class="s2">            const totalWidth = n * boxW + (n - 1) * margen;</span>
-<span class="s2">            const startX = (W - totalWidth) / 2;</span>
-
-<span class="s2">            ctx.textAlign = "center";</span>
-<span class="s2">            ctx.textBaseline = "middle";</span>
-
-<span class="s2">            for (let k = 0; k &lt; n; k++) {</span>
-<span class="s2">              let x = startX + k * (boxW + margen);</span>
-<span class="s2">              </span>
-<span class="s2">              // Determinar colores según la PALETA</span>
-<span class="s2">              let bgColor = PALETA.normalFondo;</span>
-<span class="s2">              let borderColor = PALETA.normalBorde;</span>
-<span class="s2">              let textColor = PALETA.normalTexto;</span>
-
-<span class="s2">              if (estado.done) {</span>
-<span class="s2">                bgColor = PALETA.exitoFondo; </span>
-<span class="s2">                borderColor = PALETA.exitoBorde; </span>
-<span class="s2">                textColor = PALETA.exitoTexto;</span>
-<span class="s2">              } else if (estado.comp &amp;&amp; (k === estado.comp[0] || k === estado.comp[1])) {</span>
-<span class="s2">                bgColor = PALETA.compararFondo; </span>
-<span class="s2">                borderColor = PALETA.compararBorde; </span>
-<span class="s2">                textColor = PALETA.compararTexto;</span>
-<span class="s2">              }</span>
-
-<span class="s2">              // Dibujar recuadro</span>
-<span class="s2">              ctx.fillStyle = bgColor;</span>
-<span class="s2">              ctx.fillRect(x, startY, boxW, boxH);</span>
-<span class="s2">              ctx.strokeStyle = borderColor;</span>
-<span class="s2">              ctx.lineWidth = 2;</span>
-<span class="s2">              ctx.strokeRect(x, startY, boxW, boxH);</span>
-
-<span class="s2">              // Dibujar número</span>
-<span class="s2">              ctx.fillStyle = textColor;</span>
-<span class="s2">              if (boxW &lt; 30) ctx.font = "bold 12px Arial";</span>
-<span class="s2">              else if (boxW &lt; 45) ctx.font = "bold 16px Arial";</span>
-<span class="s2">              else ctx.font = "bold 20px Arial";</span>
-
-<span class="s2">              ctx.fillText(estado.arr[k], x + boxW / 2, startY + boxH / 2);</span>
-<span class="s2">            }</span>
-<span class="s2">          }</span>
-
-<span class="s2">          function actualizarVista() {</span>
-<span class="s2">            if (pasos.length === 0) return;</span>
-<span class="s2">            dibujarEstado(pasos[pasoActual]);</span>
-<span class="s2">            infoLabel.textContent = `Paso: ${pasoActual + 1} / $</span><span class="si">{pasos.length}</span><span class="s2">`;</span>
-<span class="s2">            document.getElementById('btnAnt').disabled = (pasoActual === 0);</span>
-<span class="s2">            document.getElementById('btnSig').disabled = (pasoActual === pasos.length - 1);</span>
-<span class="s2">          }</span>
-
-<span class="s2">          function generar() {</span>
-<span class="s2">            detener();</span>
-<span class="s2">            let n = parseInt(inputNum.value);</span>
-<span class="s2">            if (isNaN(n) || n &lt; 5) n = 5;</span>
-<span class="s2">            if (n &gt; 20) n = 20;</span>
-<span class="s2">            inputNum.value = n;</span>
-<span class="s2">            pasos = calcularPasos(n);</span>
-<span class="s2">            pasoActual = 0;</span>
-<span class="s2">            actualizarVista();</span>
-<span class="s2">          }</span>
-
-<span class="s2">          function siguiente() {</span>
-<span class="s2">            if (pasoActual &lt; pasos.length - 1) {</span>
-<span class="s2">              pasoActual++;</span>
-<span class="s2">              actualizarVista();</span>
-<span class="s2">            } else {</span>
-<span class="s2">              detener();</span>
-<span class="s2">            }</span>
-<span class="s2">          }</span>
-
-<span class="s2">          function anterior() {</span>
-<span class="s2">            if (pasoActual &gt; 0) {</span>
-<span class="s2">              pasoActual--;</span>
-<span class="s2">              actualizarVista();</span>
-<span class="s2">            }</span>
-<span class="s2">          }</span>
-
-<span class="s2">          function play() {</span>
-<span class="s2">            if (playing) return;</span>
-<span class="s2">            if (pasoActual === pasos.length - 1) pasoActual = 0;</span>
-<span class="s2">            playing = true;</span>
-<span class="s2">            document.getElementById('btnPlay').textContent = '⏸ Pausar';</span>
-<span class="s2">            timer = setInterval(() =&gt; {</span>
-<span class="s2">              siguiente();</span>
-<span class="s2">              if (pasoActual &gt;= pasos.length - 1) detener();</span>
-<span class="s2">            }, 300);</span>
-<span class="s2">          }</span>
-
-<span class="s2">          function detener() {</span>
-<span class="s2">            playing = false;</span>
-<span class="s2">            clearInterval(timer);</span>
-<span class="s2">            document.getElementById('btnPlay').textContent = '▶ Reproducir';</span>
-<span class="s2">          }</span>
-
-<span class="s2">          document.getElementById('btnGenerar').onclick = generar;</span>
-<span class="s2">          document.getElementById('btnSig').onclick = () =&gt; { detener(); siguiente(); };</span>
-<span class="s2">          document.getElementById('btnPlay').onclick = () =&gt; { if (playing) detener(); else play(); };</span>
-
-<span class="s2">          generar(); </span>
-<span class="s2">      }, 100);</span>
-<span class="s2">    &lt;/script&gt;</span>
-<span class="s2">    """</span>
-    <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=21b52ba9-47d3-4f3b-b13a-a9afafb0a4fa">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">simulador_bubble_sort_numeros</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
+<main><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput" id="cell-id=7869f2ca-6f9a-46ff-a4b2-ca5cc7fbf0e4">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=21b52ba9-47d3-4f3b-b13a-a9afafb0a4fa">
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
 <div style="font-family: sans-serif; padding: 15px; border: 1px solid #ccc;
                 border-radius: 10px; background: #fafafa; max-width: 820px;">
@@ -8027,9 +7813,9 @@ a.anchor-link {
 </div>
 <canvas height="200" id="canvas" style="background:#fff; border: 1px solid #ddd; border-radius:8px; display:block;" width="800"></canvas>
 <div style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
-<button id="btnAnt" style="padding:6px 12px; cursor:pointer;"> Anterior</button>
-<button id="btnPlay" style="padding:6px 14px; cursor:pointer;"> Reproducir</button>
-<button id="btnSig" style="padding:6px 12px; cursor:pointer;">Siguiente </button>
+<button id="btnAnt" style="padding:6px 12px; cursor:pointer;">⏮ Anterior</button>
+<button id="btnPlay" style="padding:6px 14px; cursor:pointer;">▶ Reproducir</button>
+<button id="btnSig" style="padding:6px 12px; cursor:pointer;">Siguiente ⏭</button>
 <span id="info" style="margin-left: auto; color:#555; font-size:14px;">Paso: 0 / 0</span>
 </div>
 </div>
@@ -8175,7 +7961,7 @@ a.anchor-link {
             if (playing) return;
             if (pasoActual === pasos.length - 1) pasoActual = 0;
             playing = true;
-            document.getElementById('btnPlay').textContent = ' Pausar';
+            document.getElementById('btnPlay').textContent = '⏸ Pausar';
             timer = setInterval(() => {
               siguiente();
               if (pasoActual >= pasos.length - 1) detener();
@@ -8185,12 +7971,11 @@ a.anchor-link {
           function detener() {
             playing = false;
             clearInterval(timer);
-            document.getElementById('btnPlay').textContent = ' Reproducir';
+            document.getElementById('btnPlay').textContent = '▶ Reproducir';
           }
 
           document.getElementById('btnGenerar').onclick = generar;
           document.getElementById('btnSig').onclick = () => { detener(); siguiente(); };
-          document.getElementById('btnAnt').onclick = () => { detener(); anterior(); };
           document.getElementById('btnPlay').onclick = () => { if (playing) detener(); else play(); };
 
           generar(); 
@@ -8200,20 +7985,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8422ff67-09e1-43ac-975f-fdb49cc58463">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-</div>
-</div>
-</div>
-</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput" id="cell-id=8422ff67-09e1-43ac-975f-fdb49cc58463">
 </div>
 </main>
 </body>
